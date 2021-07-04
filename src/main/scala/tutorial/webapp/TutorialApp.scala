@@ -11,8 +11,7 @@ import zio.Runtime.default.unsafeRunAsync_
 
 val revision = 32
 @main
-def run =
-  document.addContentLoadListener((_: Event) => setupUI())
+def run = document.addContentLoadListener((_: Event) => setupUI())
   
 def setupUI(): Unit =
   val button = document.createNewButton(
@@ -49,12 +48,12 @@ extension (string: String)
   def toTextContent: TextContent = string
   def toParagraph: Paragraph =
     document
-      .createElement("p")
+      .createElement(ElementSelector[Paragraph])
       .tap(_.textContent = string)
 extension (doc: Document)
   def createNewButton(content: TextContent, clickEvent: ClickListener): Button =
     doc
-      .createElement("button")
+      .createElement(ElementSelector[Button])
       .tap(button => button.textContent = content)
       .tap(button =>
         button.addEventListener("click", clickEvent)
@@ -66,3 +65,7 @@ extension (doc: Document)
 extension (node: Node)
   def addChildren(children: Seq[Element]) =
     children.foreach(node.appendChild(_))
+type ElementSelector[Elem] =
+  Elem match
+    case Paragraph => "p"
+    case Button => "button"
